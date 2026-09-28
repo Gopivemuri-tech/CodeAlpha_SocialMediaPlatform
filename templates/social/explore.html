@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Explore • Nexora{% endblock %}
+{% block content %}
+<div class="explore-page">
+  <h1>Explore</h1>
+  <section class="explore-grid">
+    {% for post in posts %}
+      <a class="explore-card" href="{% url 'profile' post.author.username %}#profile-post-{{ post.id }}">
+        {% if post.image %}<img src="{{ post.image.url }}" alt="">
+        {% elif post.image_url %}<img src="{{ post.image_url }}" alt="">
+        {% else %}<div class="explore-text">{{ post.content|truncatechars:120 }}</div>{% endif %}
+        <span class="explore-overlay">♥ {{ post.like_count }} &nbsp; 💬 {{ post.comments.count }}</span>
+      </a>
+    {% empty %}<div class="no-results">No posts to explore yet.</div>{% endfor %}
+  </section>
+</div>
+{% endblock %}

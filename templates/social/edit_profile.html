@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Edit profile • Nexora{% endblock %}
+{% block content %}
+<div class="settings-page">
+  <h1>Edit profile</h1>
+  <div class="edit-profile-user">{% if user.profile.avatar_url %}<img class="avatar-56" src="{{ user.profile.avatar_url }}" alt="">{% else %}<span class="avatar-56 fallback">{{ user.username|first|upper }}</span>{% endif %}<div><strong>{{ user.username }}</strong><small>Update your profile information</small></div></div>
+  <form method="post" class="profile-edit-form">{% csrf_token %}{{ form.as_p }}<button class="ig-blue-btn" type="submit">Submit</button></form>
+</div>
+{% endblock %}

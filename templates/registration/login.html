@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Log in • Nexora{% endblock %}
+{% block content %}
+<div class="login-shell">
+  <div class="phone-preview" aria-hidden="true"><div class="mock-phone"><div class="mock-top"></div><div class="mock-story-row"><i></i><i></i><i></i><i></i></div><div class="mock-post"><div class="mock-post-top"></div><div class="mock-photo">Nexora</div><div class="mock-lines"></div></div></div></div>
+  <section class="login-column">
+    <div class="login-card">
+      <div class="login-wordmark">Nexora</div>
+      <form method="post">{% csrf_token %}
+        {% if form.errors %}<div class="form-errors">Invalid username or password.</div>{% endif %}
+        <div class="auth-field"><input type="text" name="username" autocomplete="username" placeholder="Username" required autofocus></div>
+        <div class="auth-field"><input type="password" name="password" autocomplete="current-password" placeholder="Password" required></div>
+        <button class="ig-blue-btn full" type="submit">Log in</button>
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      </form>
+      <div class="or-line"><span>OR</span></div>
+      <p class="login-note">Share moments. Follow people. Join conversations.</p>
+    </div>
+    <div class="signup-card">Don't have an account? <a href="{% url 'register' %}">Sign up</a></div>
+  </section>
+</div>
+{% endblock %}

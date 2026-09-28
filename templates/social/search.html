@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Search • Nexora{% endblock %}
+{% block content %}
+<div class="search-page">
+  <h1>Search</h1>
+  <form class="ig-search-form"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input name="q" value="{{ q }}" placeholder="Search" autofocus></form>
+  <div class="search-divider"></div>
+  {% if q %}<h3>Accounts</h3>{% else %}<div class="recent-heading"><h3>Recent</h3><span>No recent searches.</span></div>{% endif %}
+  <div class="search-results">
+  {% for u in users %}<a class="search-user" href="{% url 'profile' u.username %}">{% if u.profile.avatar_url %}<img class="avatar-44" src="{{ u.profile.avatar_url }}" alt="">{% else %}<span class="avatar-44 fallback">{{ u.username|first|upper }}</span>{% endif %}<span><strong>{{ u.username }}</strong><small>{{ u.get_full_name|default:'Nexora user' }}</small></span></a>{% empty %}{% if q %}<div class="no-results">No results found for “{{ q }}”.</div>{% endif %}{% endfor %}
+  </div>
+</div>
+{% endblock %}

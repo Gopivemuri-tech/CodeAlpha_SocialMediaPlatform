@@ -1,0 +1,40 @@
+<article class="ig-post">
+  <header class="post-top">
+    <a class="post-user" href="{% url 'profile' post.author.username %}">
+      <span class="avatar-ring-sm">{% if post.author.profile.avatar_url %}<img src="{{ post.author.profile.avatar_url }}" alt="">{% else %}<span class="fallback">{{ post.author.username|first|upper }}</span>{% endif %}</span>
+      <strong>{{ post.author.username }}</strong><span class="dot">·</span><time>{{ post.created_at|timesince }}</time>
+    </a>
+    {% if post.author == user %}
+    <form method="post" action="{% url 'delete_post' post.id %}" onsubmit="return confirm('Delete this post?')">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><button class="post-more" type="submit" title="Delete your post">•••</button></form>
+    {% else %}<button class="post-more" type="button">•••</button>{% endif %}
+  </header>
+
+  {% if post.image %}
+    <div class="post-media"><img src="{{ post.image.url }}" alt="Post by {{ post.author.username }}" loading="lazy"></div>
+  {% elif post.image_url %}
+    <div class="post-media"><img src="{{ post.image_url }}" alt="Post by {{ post.author.username }}" loading="lazy"></div>
+  {% else %}
+    <div class="text-post-media"><p>{{ post.content|linebreaksbr }}</p></div>
+  {% endif %}
+
+  <div class="post-icon-row">
+    <div class="left-icons">
+      <form method="post" action="{% url 'toggle_like' post.id %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><button class="post-icon like-icon {% if post.id in liked %}liked{% endif %}" type="submit" aria-label="Like">
+        {% if post.id in liked %}<svg viewBox="0 0 24 24" class="heart-fill"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6a5.5 5.5 0 0 0 1-8.8Z"/></svg>{% else %}<svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6a5.5 5.5 0 0 0 1-8.8Z"/></svg>{% endif %}
+      </button></form>
+      <button class="post-icon" type="button" data-focus-comment="comment-{{ post.id }}" aria-label="Comment"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.5 9.5 9.5 0 0 1-4-.9L3 21l1.8-4.5A8.5 8.5 0 1 1 21 11.5Z"/></svg></button>
+      <button class="post-icon" type="button" aria-label="Share"><svg viewBox="0 0 24 24"><path d="M22 2 9.4 14.6M22 2l-7 20-5.6-7.4L2 9Z"/></svg></button>
+    </div>
+    <button class="post-icon" type="button" aria-label="Save"><svg viewBox="0 0 24 24"><path d="M5 3h14v19l-7-5-7 5Z"/></svg></button>
+  </div>
+
+  <div class="post-details">
+    <div class="likes-count">{{ post.like_count }} like{{ post.like_count|pluralize }}</div>
+    {% if post.image or post.image_url %}<div class="caption"><a href="{% url 'profile' post.author.username %}">{{ post.author.username }}</a> {{ post.content|linebreaksbr }}</div>{% endif %}
+    {% if post.comments.count %}<button class="view-comments" type="button">View all {{ post.comments.count }} comment{{ post.comments.count|pluralize }}</button>{% endif %}
+    <div class="comments-list">
+      {% for c in post.comments.all|slice:":3" %}<div class="comment-line"><a href="{% url 'profile' c.author.username %}">{{ c.author.username }}</a> {{ c.content }}</div>{% endfor %}
+    </div>
+    <form class="ig-comment-form" method="post" action="{% url 'add_comment' post.id %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}"><input id="comment-{{ post.id }}" name="content" maxlength="500" placeholder="Add a comment..." required><button type="submit">Post</button></form>
+  </div>
+</article>

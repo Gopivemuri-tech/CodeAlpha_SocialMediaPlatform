@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}@{{ profile_user.username }} • Nexora{% endblock %}
+{% block content %}
+<div class="profile-page">
+  <section class="ig-profile-header">
+    <div class="profile-photo-wrap">
+      {% if profile.avatar_url %}<img class="profile-photo" src="{{ profile.avatar_url }}" alt="{{ profile_user.username }}">{% else %}<span class="profile-photo fallback big">{{ profile_user.username|first|upper }}</span>{% endif %}
+    </div>
+    <div class="profile-info">
+      <div class="profile-title-row"><h1>{{ profile_user.username }}</h1>
+        {% if profile_user == user %}<a class="ig-gray-btn" href="{% url 'edit_profile' %}">Edit profile</a>
+        {% else %}<form method="post" action="{% url 'toggle_follow' profile_user.username %}">{% csrf_token %}<button class="{% if is_following %}ig-gray-btn{% else %}ig-blue-btn{% endif %}" type="submit">{% if is_following %}Following{% else %}Follow{% endif %}</button></form>{% endif %}
+        <button class="profile-options" type="button">•••</button>
+      </div>
+      <div class="profile-stats"><span><strong>{{ profile_user.posts.count }}</strong> posts</span><span><strong>{{ followers_count }}</strong> followers</span><span><strong>{{ following_count }}</strong> following</span></div>
+      <div class="profile-copy"><strong>{{ profile_user.get_full_name|default:profile_user.username }}</strong>{% if profile.bio %}<p>{{ profile.bio }}</p>{% endif %}{% if profile.location %}<small>{{ profile.location }}</small>{% endif %}</div>
+    </div>
+  </section>
+
+  <div class="profile-tabs"><button class="active"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg> POSTS</button><button><svg viewBox="0 0 24 24"><path d="M5 3h14v19l-7-5-7 5Z"/></svg> SAVED</button><button><svg viewBox="0 0 24 24"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7M8 7a4 4 0 1 1 8 0M8 21v-5a4 4 0 0 1 8 0v5"/></svg> TAGGED</button></div>
+
+  <section class="profile-grid">
+    {% for post in posts %}<a class="grid-post" href="#profile-post-{{ post.id }}">{% if post.image %}<img src="{{ post.image.url }}" alt="">{% elif post.image_url %}<img src="{{ post.image_url }}" alt="">{% else %}<div class="grid-text">{{ post.content|truncatechars:120 }}</div>{% endif %}<span class="grid-hover">♥ {{ post.like_count }} &nbsp; 💬 {{ post.comments.count }}</span></a>{% empty %}<div class="profile-empty"><div class="camera-circle"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="4"/><circle cx="12" cy="13" r="4"/><path d="m8 5 1-2h6l1 2"/></svg></div><h2>No Posts Yet</h2></div>{% endfor %}
+  </section>
+
+  {% if posts %}<section class="profile-feed"><h3>Posts</h3>{% for post in posts %}<div id="profile-post-{{ post.id }}">{% include 'social/post_card.html' %}</div>{% endfor %}</section>{% endif %}
+</div>
+{% endblock %}

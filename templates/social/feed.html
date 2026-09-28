@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Nexora{% endblock %}
+{% block content %}
+<div class="home-layout">
+  <section class="home-center">
+    <div class="stories-row" aria-label="Stories">
+      <a class="story" href="{% url 'profile' user.username %}">
+        <span class="story-ring own-story">{% if user.profile.avatar_url %}<img src="{{ user.profile.avatar_url }}" alt="">{% else %}<span>{{ user.username|first|upper }}</span>{% endif %}<b>+</b></span>
+        <small>Your story</small>
+      </a>
+      {% for u in suggested %}
+      <a class="story" href="{% url 'profile' u.username %}">
+        <span class="story-ring">{% if u.profile.avatar_url %}<img src="{{ u.profile.avatar_url }}" alt="">{% else %}<span>{{ u.username|first|upper }}</span>{% endif %}</span>
+        <small>{{ u.username|truncatechars:11 }}</small>
+      </a>
+      {% endfor %}
+    </div>
+
+    <div class="mobile-create-bar">
+      <button type="button" data-open-create><span>+</span> Create a post</button>
+    </div>
+
+    <section class="ig-feed">
+      {% for post in posts %}
+        {% include 'social/post_card.html' %}
+      {% empty %}
+        <div class="feed-empty">
+          <div class="camera-circle"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="4"/><circle cx="12" cy="13" r="4"/><path d="m8 5 1-2h6l1 2"/></svg></div>
+          <h2>Share photos</h2>
+          <p>When you share photos and posts, they will appear on your profile and feed.</p>
+          <button type="button" class="text-blue" data-open-create>Share your first post</button>
+        </div>
+      {% endfor %}
+    </section>
+  </section>
+
+  <aside class="home-right">
+    <div class="account-row current-user-row">
+      <a class="account-main" href="{% url 'profile' user.username %}">
+        {% if user.profile.avatar_url %}<img class="avatar-44" src="{{ user.profile.avatar_url }}" alt="">{% else %}<span class="avatar-44 fallback">{{ user.username|first|upper }}</span>{% endif %}
+        <span><strong>{{ user.username }}</strong><small>{{ user.get_full_name|default:'Nexora user' }}</small></span>
+      </a>
+      <a class="text-blue" href="{% url 'profile' user.username %}">Profile</a>
+    </div>
+    <div class="suggest-heading"><strong>Suggested for you</strong><span>See All</span></div>
+    {% for u in suggested %}
+    <div class="account-row">
+      <a class="account-main" href="{% url 'profile' u.username %}">
+        {% if u.profile.avatar_url %}<img class="avatar-36" src="{{ u.profile.avatar_url }}" alt="">{% else %}<span class="avatar-36 fallback">{{ u.username|first|upper }}</span>{% endif %}
+        <span><strong>{{ u.username }}</strong><small>Suggested for you</small></span>
+      </a>
+      <form method="post" action="{% url 'toggle_follow' u.username %}">{% csrf_token %}<button class="text-blue" type="submit">Follow</button></form>
+    </div>
+    {% empty %}<p class="side-empty">You're connected with everyone.</p>{% endfor %}
+    <footer class="mini-footer">About · Help · Press · API · Jobs · Privacy · Terms · Locations · Language<br><br>© 2026 NEXORA</footer>
+  </aside>
+</div>
+{% endblock %}
