@@ -202,9 +202,7 @@ python manage.py test
 
 ## Project Demo
 
-The project demo video is published separately on LinkedIn as part of the CodeAlpha internship submission.
-
-> After publishing the LinkedIn post, the public post link can be added here.
+▶ **[Watch the Nexora Project Demo on LinkedIn](https://www.linkedin.com/feed/update/urn:li:ugcPost:7510187402771189760/)**
 
 ## Internship
 
