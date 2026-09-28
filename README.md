@@ -213,4 +213,4 @@ The project demo video is published separately on LinkedIn as part of the CodeAl
 
 ---
 
-Developed by **Manikanta**.
+Developed by **Gopi Vemuri**.
